@@ -1,0 +1,58 @@
+<table><tr><td><?php echo get_string('role','block_quickfindlist'); ?></td><td><select name=role>
+<?php
+global $COURSE;
+if(!empty($this->config->role)){
+    $currentrole=$this->config->role;
+}else{
+    $currentrole=null;
+}
+
+$allusers=new object;
+$allusers->id=-1;
+$allusers->name=get_string('allusers','block_quickfindlist');
+$roles=array_merge(array($allusers),get_records('role'));
+
+$rolesused=array();
+if($blocksonthispage=get_records_sql('SELECT * FROM '.$CFG->prefix.'block JOIN '.$CFG->prefix.'block_instance ON '.$CFG->prefix.'block.id=blockid WHERE name=\'quickfindlist\' AND pagetype=\''.$this->instance->pagetype.'\' AND pageid='.$this->instance->pageid)){
+	foreach($blocksonthispage as $block){
+        if($block->config=unserialize(base64_decode($block->configdata))){
+            $rolesused[]=$block->config->role;
+        }
+    }
+}var_dump($rolesused);
+
+foreach($roles as $role){
+    if($currentrole==$role->id){
+        $selected='SELECTED';
+    }else{
+
+        $selected='';
+
+        //check if this would be a duplicate role list and if so disable it
+        if(in_array($role->id,$rolesused)){
+            $selected='DISABLED';
+        }
+    }
+    echo'<option value='.$role->id.' '.$selected.'>'.$role->name;
+
+    $whereclause='(SELECT COUNT(*)
+                               FROM '.$CFG->prefix.'role_assignments
+                                   JOIN '.$CFG->prefix.'context ON '.$CFG->prefix.'context.id=contextid
+                               WHERE '.$CFG->prefix.'role_assignments.userid='.$CFG->prefix.'user.id
+                                   AND '.$CFG->prefix.'role_assignments.roleid='.$role->id.'
+                                   AND '.$CFG->prefix.'role_assignments.hidden=0';
+                if($COURSE->format!='site'){$whereclause.=' AND contextlevel=50 AND instanceid='.$COURSE->id;}
+                $whereclause.=' )>0
+                        AND deleted = 0';
+
+    $usercount=count_records_select('user',$whereclause);
+    if($usercount>5000){
+        echo get_string('lotsofusers','block_quickfindlist').'('.$usercount.'), '.get_string('couldgetslow','block_quickfindlist');
+    }
+echo'</option>'."\n";
+}
+?>
+</select></td></tr>
+<tr><td><?php echo get_string('userfields','block_quickfindlist'); ?></td><td><input name="userfields" size=50 value="<?php if(!empty($this->config->userfields)){echo $this->config->userfields;}else{ print_string('userfieldsdefault','block_quickfindlist');} ?>"></td></tr>
+<tr><td><?php echo get_string('url','block_quickfindlist'); ?></td><td><input name="url" size=50 value="<?php if(!empty($this->config->url)){echo $this->config->url;} ?>"></td></tr></table>
+<input type="submit" value="<?php print_string('savechanges') ?>" />
