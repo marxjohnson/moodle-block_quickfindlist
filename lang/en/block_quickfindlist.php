@@ -1,5 +1,6 @@
 <?php
 $string['allusers']         = 'All Users';
+$string['pluginname']         = 'Quickfind List';
 $string['blockname']         = 'Quickfind List';
 $string['couldgetslow']         = 'could get slow';
 $string['list']         =  ' List';
