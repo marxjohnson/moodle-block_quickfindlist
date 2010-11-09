@@ -1,6 +1,6 @@
 <?php
 
-$block_quickfindlist_capabilities = array(
+$capabilities = array(
 
     'block/quickfindlist:use' => array(
 
