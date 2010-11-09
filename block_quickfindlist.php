@@ -23,12 +23,12 @@ class block_quickfindlist extends block_base {
         if (empty($this->config->role)) {
             $select = 'SELECT * ';
             $from = 'FROM {block} AS b
-                        JOIN {block_instance} AS bi ON b.id = blockid ';
-            $where = 'WHERE name="quickfindlist"
-                        AND pagetype="?"
-                        AND pageid = ?
-                        AND instance.id < ?';
-            $params = array($this->instance->pagetype, $this->instance->pageid, $this->instance->id);
+                        JOIN {block_instances} AS bi ON b.name = blockname ';
+            $where = 'WHERE name = "quickfindlist"
+                        AND pagetypepattern = "?"
+                        AND parentcontextid = ?
+                        AND bi.id < ?';
+            $params = array($this->instance->pagetypepattern, $this->instance->parentcontextid, $this->instance->id);
             if ($thispageqflblocks = $DB->get_records_sql($select.$from.$where, $params)){
                 foreach ($thispageqflblocks as $thispageqflblock){
                     //don't give a warning for blocks without a role configured
@@ -63,12 +63,10 @@ class block_quickfindlist extends block_base {
             $name = optional_param('quickfindlistsearch'.$roleid, '', PARAM_TEXT);
 
             $this->content->text = '<a name="quickfindanchor'.$roleid.'"></a>
-                <form action="'.$CFG->wwwroot.$_SERVER['REQUEST_URI'].'#quickfindanchor'.$roleid.'" method="post">
+                <form action="'.$_SERVER['REQUEST_URI'].'#quickfindanchor'.$roleid.'" method="post">
                     <input style="width:120px;" autocomplete="off" onkeyup="quickfindsearch(\''.$roleid.'\', \''.$this->config->userfields.'\', \''.urlencode($this->config->url).'\', \''.$COURSE->format.'\', \''.$COURSE->id.'\')" id="quickfindlistsearch'.$roleid.'" name="quickfindlistsearch'.$roleid.'" value="'.$name.'" />
                     <span id="quickfindprogress'.$roleid.'" style="visibility:hidden;"><img src="'.$CFG->wwwroot.'/blocks/quickfindlist/pix/ajax-loader.gif" alt="Loading.." /></span>
-                    <noscript>
-                        <div><input type="submit" name="quickfindsubmit'.$roleid.'" value="Search" /></div>
-                    </noscript>
+                    <div><input type="submit" id="quickfindsubmit'.$roleid.'" name="quickfindsubmit'.$roleid.'" value="Search" /></div>
                 </form>';
 
             $this->content->text .= '<div id="quickfindlist'.$roleid.'">';
@@ -76,18 +74,17 @@ class block_quickfindlist extends block_base {
 
             if (!empty($quickfindsubmit[$roleid])) {
                 if (!empty($name)) {
-                    $params = array($name);
+                    $params = array("%$name%");
                     $select = 'SELECT id, firstname, lastname, username ';
-                    $from = 'FROM {user} AS u';
-                    $where = 'WHERE deleted=0 AND CONCAT(firstname, " ", lastname) LIKE "%?%" ';
+                    $from = 'FROM {user} AS u ';
+                    $where = "WHERE deleted = 0 AND CONCAT(firstname, ' ', lastname) LIKE ? ";
                     if ($this->config->role != -1) {
                         $params[] = $this->config->role;
                         $subselect = 'SELECT COUNT(*) ';
                         $subfrom = 'FROM {role_assignments} AS ra
                                            JOIN {context} AS c ON c.id = contextid ';
                         $subwhere = 'WHERE ra.userid = u.id
-                                           AND ra.roleid=?
-                                           AND ra.hidden=0';
+                                           AND ra.roleid=?';
                         if ($COURSE->format != 'site') {
                             $params[] = $COURSE->id;
                             $subwhere .= ' AND contextlevel=50 AND instanceid = ?';
