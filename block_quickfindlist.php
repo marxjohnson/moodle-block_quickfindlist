@@ -4,7 +4,6 @@ class block_quickfindlist extends block_base {
 
     function init() {
         $this->content_type = BLOCK_TYPE_TEXT;
-        $this->version = 2009060300;
         $this->title = get_string('quickfindlist','block_quickfindlist');
         $this->content->footer = '';
     }
