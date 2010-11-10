@@ -5,7 +5,6 @@ class block_quickfindlist extends block_base {
     function init() {
         $this->content_type = BLOCK_TYPE_TEXT;
         $this->title = get_string('quickfindlist','block_quickfindlist');
-        $this->content->footer = '';
     }
 
 
@@ -20,6 +19,10 @@ class block_quickfindlist extends block_base {
 
     function get_content() {
         global $CFG, $COURSE, $DB;
+        if ($this->content !== NULL) {
+            return $this->content;
+        }
+
         if (empty($this->config->role)) {
             $select = 'SELECT * ';
             $from = 'FROM {block} AS b
@@ -50,7 +53,6 @@ class block_quickfindlist extends block_base {
             $this->title = get_string('allusers','block_quickfindlist').get_string('list','block_quickfindlist');
         }
 
-        global $CFG, $USER, $COURSE;
         $context_system = get_context_instance(CONTEXT_SYSTEM);
 
         if (has_capability('block/quickfindlist:use', $context_system)) {
@@ -63,10 +65,10 @@ class block_quickfindlist extends block_base {
             $name = optional_param('quickfindlistsearch'.$roleid, '', PARAM_TEXT);
 
             $this->content->text = '<a name="quickfindanchor'.$roleid.'"></a>
-                <form action="'.$_SERVER['REQUEST_URI'].'#quickfindanchor'.$roleid.'" method="post">
-                    <input style="width:120px;" autocomplete="off" onkeyup="quickfindsearch(\''.$roleid.'\', \''.$this->config->userfields.'\', \''.urlencode($this->config->url).'\', \''.$COURSE->format.'\', \''.$COURSE->id.'\')" id="quickfindlistsearch'.$roleid.'" name="quickfindlistsearch'.$roleid.'" value="'.$name.'" />
-                    <span id="quickfindprogress'.$roleid.'" style="visibility:hidden;"><img src="'.$CFG->wwwroot.'/blocks/quickfindlist/pix/ajax-loader.gif" alt="Loading.." /></span>
-                    <div><input type="submit" id="quickfindsubmit'.$roleid.'" name="quickfindsubmit'.$roleid.'" value="Search" /></div>
+                <form id="quickfindform'.$roleid.'" action="'.$_SERVER['REQUEST_URI'].'#quickfindanchor'.$roleid.'" method="post">
+                    <input id="quickfindlistsearch'.$roleid.'" style="width:120px;" autocomplete="off" />
+                    <span class="quickfindprogress" id="quickfindprogress'.$roleid.'"><img src="'.$this->page->theme->pix_url('i/loading_small', 'moodle').'" alt="Loading.." /></span>
+                    <div><input type="submit" class="submitbutton" name="quickfindsubmit'.$roleid.'" value="Search" /></div>
                 </form>';
 
             $this->content->text .= '<div id="quickfindlist'.$roleid.'">';
@@ -105,11 +107,19 @@ class block_quickfindlist extends block_base {
             }
             $this->content->text .= '</div>';
 
-//            require_js(array($CFG->wwwroot.'/blocks/quickfindlist/quickfindlist.js',
-//            'yui_yahoo',
-//            'yui_event',
-//            'yui_connection'));
-//            $this->content->text.='<script type="text/javascript">var wwwroot="'.$CFG->wwwroot.'";var xhr;</script>';
+            $jsmodule = array(
+                'name'  =>  'block_quickfindlist',
+                'fullpath'  =>  '/blocks/quickfindlist/module.js',
+                'requires'  =>  array('base', 'node', 'io')
+            );
+            $jsdata = array(
+                $this->config->role,
+                $this->config->userfields,
+                urlencode($this->config->url),
+                $COURSE->format,
+                $COURSE->id
+            );
+            $this->page->requires->js_init_call('M.block_quickfindlist.init', $jsdata, false, $jsmodule);
         }
         $this->content->footer='';
 

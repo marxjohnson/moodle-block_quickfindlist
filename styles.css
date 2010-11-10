@@ -1,0 +1,7 @@
+body.jsenabled .block_quickfindlist .submitbutton {
+    display: none;
+}
+
+.block_quickfindlist .quickfindprogress {
+    visibility: hidden;
+}
