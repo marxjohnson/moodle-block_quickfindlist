@@ -24,7 +24,7 @@ M.block_quickfindlist = {
     search: function(e) {
         e.preventDefault();
         var Y = M.block_quickfindlist.Y;
-        var roleid = /[0-9]+/.exec(e.target.get('id'))[0];
+        var roleid = /[\-0-9]+/.exec(e.target.get('id'))[0];
         M.block_quickfindlist.currentinstance = M.block_quickfindlist.instances[roleid];
         var instance = M.block_quickfindlist.currentinstance;
         var searchstring = instance.searchbox.get('value');
