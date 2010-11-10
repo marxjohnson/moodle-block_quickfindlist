@@ -12,7 +12,8 @@ $context_system = get_context_instance(CONTEXT_SYSTEM);
 
 if (has_capability('block/quickfindlist:use', $context_system)) {
 
-    $output = '';
+    $output = new stdClass;
+    $output->roleid = $role;
     if(!empty($name)) {
 
         $params = array("%$name%");
@@ -35,15 +36,16 @@ if (has_capability('block/quickfindlist:use', $context_system)) {
         $order = 'ORDER BY lastname';
 
         if($people = $DB->get_records_sql($select.$from.$where.$order, $params)){
-            foreach ($people as $person) {
-                $userstring = str_replace('[[firstname]]', $person->firstname, $userfields);
-                $userstring = str_replace('[[lastname]]', $person->lastname, $userstring);
-                $userstring = str_replace('[[username]]', $person->username, $userstring);
-                $output .= '<div><a href="'.$url.$person->id.'">'.$userstring.'</a></div>';
-            }
+            $output->people = $people;
+//            foreach ($people as $person) {
+//                $userstring = str_replace('[[firstname]]', $person->firstname, $userfields);
+//                $userstring = str_replace('[[lastname]]', $person->lastname, $userstring);
+//                $userstring = str_replace('[[username]]', $person->username, $userstring);
+//                $output .= '<div><a href="'.$url.$person->id.'">'.$userstring.'</a></div>';
+//            }
         }
     }
-    echo $output;
+    echo json_encode($output);
 
 } else {
 	header('HTTP/1.1 401 Not Authorised');

@@ -110,7 +110,7 @@ class block_quickfindlist extends block_base {
             $jsmodule = array(
                 'name'  =>  'block_quickfindlist',
                 'fullpath'  =>  '/blocks/quickfindlist/module.js',
-                'requires'  =>  array('base', 'node', 'io')
+                'requires'  =>  array('base', 'node', 'json', 'io')
             );
             $jsdata = array(
                 $this->config->role,

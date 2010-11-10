@@ -25,8 +25,7 @@ M.block_quickfindlist = {
         e.preventDefault();
         var Y = M.block_quickfindlist.Y;
         var roleid = /[\-0-9]+/.exec(e.target.get('id'))[0];
-        M.block_quickfindlist.currentinstance = M.block_quickfindlist.instances[roleid];
-        var instance = M.block_quickfindlist.currentinstance;
+        var instance = M.block_quickfindlist.instances[roleid];
         var searchstring = instance.searchbox.get('value');
 
         uri = M.cfg.wwwroot+'/blocks/quickfindlist/quickfind.php';
@@ -38,9 +37,17 @@ M.block_quickfindlist = {
             data: 'role='+roleid+'&name='+searchstring+'&userfields='+instance.userfields+'&url='+instance.url+'&courseformat='+instance.courseformat+'&courseid='+instance.courseid,
             on: {
                 success: function(id, o) {
-                    var instance = M.block_quickfindlist.currentinstance;
+                    var response = Y.JSON.parse(o.responseText);
+                    var instance = M.block_quickfindlist.instances[response.roleid];
+                    var list = '';
+                    for (p in response.people) {
+                        var userstring = instance.userfields.replace('[[firstname]]', response.people[p].firstname);
+                        userstring = userstring.replace('[[lastname]]', response.people[p].lastname);
+                        userstring = userstring.replace('[[username]]', response.people[p].username);
+                        list += '<div><a href="'+instance.url+response.people[p].id+'">'+userstring+'</a></div>';
+                    };
                     instance.progress.setStyle('visibility', 'hidden');
-                    instance.listcontainer.set('innerHTML', o.responseText);
+                    instance.listcontainer.set('innerHTML', list);
                 },
                 failure: function(id, o) {
                     if (o.statusText != 'abort') {
