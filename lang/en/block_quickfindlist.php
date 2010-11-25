@@ -4,6 +4,7 @@ $string['pluginname']         = 'Quickfind List';
 $string['blockname']         = 'Quickfind List';
 $string['couldgetslow']         = 'could get slow';
 $string['list']         =  ' List';
+$string['loading']  = 'Loading...';
 $string['lotsofusers']         = ' WARNING: lots of users';
 $string['multiplenorole']         = 'You cannot have two blocks on the same page without a role configured; Edit this block and select a role.';
 $string['nousers']         =  'ERROR: No users have that role';
