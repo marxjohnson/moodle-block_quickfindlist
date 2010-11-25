@@ -12,7 +12,6 @@ M.block_quickfindlist = {
             'courseformat': courseformat,
             'courseid': courseid,
             'progress': Y.one('#quickfindprogress'+roleid),
-            'searchbox': Y.one('#quickfindlistsearch'+roleid),
             'xhr': null
         }
         this.instances[roleid] = instance;
@@ -37,7 +36,6 @@ M.block_quickfindlist = {
         
         var Y = this.Y;
         var instance = this.instances[roleid];
-        var searchstring = instance.searchbox.get('value');
 
         uri = M.cfg.wwwroot+'/blocks/quickfindlist/quickfind.php';
         if (instance.xhr != null) {
