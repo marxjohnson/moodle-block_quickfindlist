@@ -29,7 +29,7 @@ M.block_quickfindlist = {
     search_on_submit: function(e) {
         e.preventDefault();
         var roleid = /[\-0-9]+/.exec(e.target.get('id'))[0];
-        var searchstring = e.target.getById('quickfindlistsearch'.roleid).value;
+        var searchstring = e.target.getById('quickfindlistsearch'+roleid).value;
         M.block_quickfindlist.search(searchstring, roleid);
     },
 
