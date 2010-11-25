@@ -12,7 +12,6 @@ M.block_quickfindlist = {
             'courseformat': courseformat,
             'courseid': courseid,
             'progress': Y.one('#quickfindprogress'+roleid),
-            'listcontainer': Y.one('#quickfindlist'+roleid),
             'searchbox': Y.one('#quickfindlistsearch'+roleid),
             'xhr': null
         }
@@ -38,16 +37,17 @@ M.block_quickfindlist = {
             on: {
                 success: function(id, o) {
                     var response = Y.JSON.parse(o.responseText);
-                    var instance = M.block_quickfindlist.instances[response.roleid];
-                    var list = '';
+                    var instance = M.block_quickfindlist.instances[response.roleid];                    
+                    var list = Y.Node.create('<ul />');
                     for (p in response.people) {
                         var userstring = instance.userfields.replace('[[firstname]]', response.people[p].firstname);
                         userstring = userstring.replace('[[lastname]]', response.people[p].lastname);
                         userstring = userstring.replace('[[username]]', response.people[p].username);
-                        list += '<div><a href="'+instance.url+response.people[p].id+'">'+userstring+'</a></div>';
-                    };
+                        list.appendChild(Y.Node.create('<li><a href="'+instance.url+response.people[p].id+'">'+userstring+'</a></li>'));
+                    }
                     instance.progress.setStyle('visibility', 'hidden');
-                    instance.listcontainer.set('innerHTML', list);
+                    Y.one('#quickfindlist'+roleid).replace(list);
+                    list.set('id', 'quickfindlist'+roleid);
                 },
                 failure: function(id, o) {
                     if (o.statusText != 'abort') {
@@ -62,32 +62,3 @@ M.block_quickfindlist = {
         });
     }
 }
-
-//
-//quickfindsearch(\''.$roleid.'\', \''.$this->config->userfields.'\', \''.urlencode($this->config->url).'\', \''.$COURSE->format.'\', \''.$COURSE->id.'\')" id="quickfindlistsearch'.$roleid.'" name="quickfindlistsearch'.$roleid.'" value="'.$name.'
-//function quickfindsearch(roleid, userfields, url, courseformat, courseid){
-//    var progress = YAHOO.util.Dom.get('quickfindprogress'+roleid);
-//    var searchbox = YAHOO.util.Dom.get('quickfindlistsearch'+roleid);
-//    var searchstring= searchbox.value;
-//    var quickfindlist = YAHOO.util.Dom.get('quickfindlist'+roleid);
-//    if(xhr != undefined) {
-//        YAHOO.util.Connect.abort(xhr);
-//    }
-//    progress.style.visibility = 'visible';
-//    xhr = YAHOO.util.Connect.asyncRequest(
-//        'get',
-//        wwwroot+'/blocks/quickfindlist/quickfind.php?role='+roleid+'&name='+searchstring+'&userfields='+userfields+'&url='+url+'&courseformat='+courseformat+'&courseid='+courseid,
-//        {
-//            success: function(o) {
-//                progress.style.visibility = 'hidden';
-//                quickfindlist.innerHTML = o.responseText;
-//            },
-//            failure: function(o) {
-//                if(o.status == 0) {
-//                    progress.style.visibility = 'hidden';
-//                    quickfindlist.innerHTML = o.statusText;
-//                }
-//            }
-//       }
-//   );
-//}

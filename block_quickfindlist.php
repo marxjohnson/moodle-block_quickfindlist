@@ -64,16 +64,15 @@ class block_quickfindlist extends block_base {
             }
             $name = optional_param('quickfindlistsearch'.$roleid, '', PARAM_TEXT);
 
-            $this->content->text = '<a name="quickfindanchor'.$roleid.'"></a>
-                <form id="quickfindform'.$roleid.'" action="'.$_SERVER['REQUEST_URI'].'#quickfindanchor'.$roleid.'" method="post">
-                    <input id="quickfindlistsearch'.$roleid.'" style="width:120px;" autocomplete="off" />
-                    <span class="quickfindprogress" id="quickfindprogress'.$roleid.'"><img src="'.$this->page->theme->pix_url('i/loading_small', 'moodle').'" alt="Loading.." /></span>
-                    <div><input type="submit" class="submitbutton" name="quickfindsubmit'.$roleid.'" value="Search" /></div>
-                </form>';
+            $anchor = html_writer::tag('a', '', array('name' => 'quickfindanchor'.$roleid));
+            $search = html_writer::empty_tag('input', array('id' => 'quickfindlistsearch'.$roleid, 'class' => 'quickfindlistsearch', 'autocomplete' => 'off'));
+            $progress = html_writer::empty_tag('img', array('id' => 'quickfindprogress'.$roleid, 'class' => 'quickfindprogress', 'src' => $this->page->theme->pix_url('i/loading_small', 'moodle'), 'alt' => get_string('loading', 'quickfindlist')));
+            $submit = html_writer::empty_tag('input', array('type' => 'submit', 'class' => 'submitbutton', 'name' => 'quickfindsubmit'.$roleid, 'value' => get_string('search')));
+            $form = html_writer::tag('form', $search.$progress.$submit, array('id' => 'quickfindform'.$roleid, 'action' => $this->page->url.'#quickfindanchor'.$roleid, 'method' => 'post'));
 
-            $this->content->text .= '<div id="quickfindlist'.$roleid.'">';
+            
             $quickfindsubmit[$roleid] = optional_param('quickfindsubmit'.$roleid, false, PARAM_ALPHA);
-
+            $listcontents = '';
             if (!empty($quickfindsubmit[$roleid])) {
                 if (!empty($name)) {
                     $params = array("%$name%");
@@ -100,12 +99,13 @@ class block_quickfindlist extends block_base {
                             $userstring = str_replace('[[firstname]]', $person->firstname, $this->config->userfields);
                             $userstring = str_replace('[[lastname]]', $person->lastname, $userstring);
                             $userstring = str_replace('[[username]]', $person->username, $userstring);
-                            $this->content->text .= '<div><a href="'.$this->config->url.$person->id.'">'.$userstring.'</a></div>';
+                            $link = html_writer::tag('a', $userstring, array('href' => $this->config->url.$person->id));
+                            $listcontents .= html_writer::tag('li', $link);
                         }
                     }
                 }
             }
-            $this->content->text .= '</div>';
+            $list = html_writer::tag('ul', $listcontents, array('id' => 'quickfindlist'.$roleid));
 
             $jsmodule = array(
                 'name'  =>  'block_quickfindlist',
@@ -122,7 +122,7 @@ class block_quickfindlist extends block_base {
             $this->page->requires->js_init_call('M.block_quickfindlist.init', $jsdata, false, $jsmodule);
         }
         $this->content->footer='';
-
+        $this->content->text = $anchor.$form.$list;
         return $this->content;
 
     }
