@@ -3,7 +3,6 @@ require_once('../../config.php');
 
 $name = required_param('name', PARAM_TEXT);
 $role = required_param('role', PARAM_INT);
-$userfields = required_param('userfields', PARAM_CLEAN);
 $courseformat = required_param('courseformat', PARAM_TEXT);
 $courseid = required_param('courseid', PARAM_TEXT);
 

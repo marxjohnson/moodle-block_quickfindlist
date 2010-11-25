@@ -45,7 +45,7 @@ M.block_quickfindlist = {
         }
         instance.progress.setStyle('visibility', 'visible');
         instance.xhr = Y.io(uri, {
-            data: 'role='+roleid+'&name='+searchstring+'&userfields='+instance.userfields+'&url='+instance.url+'&courseformat='+instance.courseformat+'&courseid='+instance.courseid,
+            data: 'role='+roleid+'&name='+searchstring+'&courseformat='+instance.courseformat+'&courseid='+instance.courseid,
             on: {
                 success: function(id, o) {
                     var response = Y.JSON.parse(o.responseText);
