@@ -60,7 +60,9 @@ class block_quickfindlist extends block_base {
                 $this->config->userfields = get_string('userfieldsdefault','block_quickfindlist');
             }
             if (empty($this->config->url)) {
-                $this->config->url = $CFG->wwwroot.'/user/view.php?course='.$COURSE->id.'&id=';
+                $url = new moodle_url('/user/view.php', array('course' => $COURSE->id));
+            } else {
+                $url = new moodle_url($this->config->url);
             }
             $name = optional_param('quickfindlistsearch'.$roleid, '', PARAM_TEXT);
 
@@ -99,7 +101,7 @@ class block_quickfindlist extends block_base {
                             $userstring = str_replace('[[firstname]]', $person->firstname, $this->config->userfields);
                             $userstring = str_replace('[[lastname]]', $person->lastname, $userstring);
                             $userstring = str_replace('[[username]]', $person->username, $userstring);
-                            $link = html_writer::tag('a', $userstring, array('href' => $this->config->url.$person->id));
+                            $link = html_writer::tag('a', $userstring, array('href' => $url->out(false, array('id' => $person->id))));
                             $listcontents .= html_writer::tag('li', $link);
                         }
                     }
@@ -115,7 +117,7 @@ class block_quickfindlist extends block_base {
             $jsdata = array(
                 $this->config->role,
                 $this->config->userfields,
-                urlencode($this->config->url),
+                $url->out(false),
                 $COURSE->format,
                 $COURSE->id
             );

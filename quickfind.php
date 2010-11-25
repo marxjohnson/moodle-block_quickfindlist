@@ -4,7 +4,6 @@ require_once('../../config.php');
 $name = required_param('name', PARAM_TEXT);
 $role = required_param('role', PARAM_INT);
 $userfields = required_param('userfields', PARAM_CLEAN);
-$url = urldecode(required_param('url', PARAM_URL));
 $courseformat = required_param('courseformat', PARAM_TEXT);
 $courseid = required_param('courseid', PARAM_TEXT);
 
@@ -37,12 +36,6 @@ if (has_capability('block/quickfindlist:use', $context_system)) {
 
         if($people = $DB->get_records_sql($select.$from.$where.$order, $params)){
             $output->people = $people;
-//            foreach ($people as $person) {
-//                $userstring = str_replace('[[firstname]]', $person->firstname, $userfields);
-//                $userstring = str_replace('[[lastname]]', $person->lastname, $userstring);
-//                $userstring = str_replace('[[username]]', $person->username, $userstring);
-//                $output .= '<div><a href="'.$url.$person->id.'">'.$userstring.'</a></div>';
-//            }
         }
     }
     echo json_encode($output);
