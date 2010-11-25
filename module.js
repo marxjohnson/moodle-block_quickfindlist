@@ -16,15 +16,27 @@ M.block_quickfindlist = {
             'xhr': null
         }
         this.instances[roleid] = instance;
-        Y.on('keyup', this.search, '#quickfindlistsearch'+roleid);
-        Y.on('submit', this.search, '#quickfindform'+roleid);
+        Y.on('keyup', this.search_on_type, '#quickfindlistsearch'+roleid);
+        Y.on('submit', this.search_on_submit, '#quickfindform'+roleid);
     },
 
-    search: function(e) {
-        e.preventDefault();
-        var Y = M.block_quickfindlist.Y;
+    search_on_type: function(e) {
+        var searchstring = e.target.get('value');
         var roleid = /[\-0-9]+/.exec(e.target.get('id'))[0];
-        var instance = M.block_quickfindlist.instances[roleid];
+        M.block_quickfindlist.search(searchstring, roleid);
+    },
+
+    search_on_submit: function(e) {
+        e.preventDefault();
+        var roleid = /[\-0-9]+/.exec(e.target.get('id'))[0];
+        var searchstring = e.target.getById('quickfindlistsearch'.roleid).value;
+        M.block_quickfindlist.search(searchstring, roleid);
+    },
+
+    search: function(searchstring, roleid) {
+        
+        var Y = this.Y;
+        var instance = this.instances[roleid];
         var searchstring = instance.searchbox.get('value');
 
         uri = M.cfg.wwwroot+'/blocks/quickfindlist/quickfind.php';
