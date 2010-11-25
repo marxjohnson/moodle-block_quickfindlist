@@ -66,7 +66,7 @@ class block_quickfindlist extends block_base {
 
             $anchor = html_writer::tag('a', '', array('name' => 'quickfindanchor'.$roleid));
             $search = html_writer::empty_tag('input', array('id' => 'quickfindlistsearch'.$roleid, 'class' => 'quickfindlistsearch', 'autocomplete' => 'off'));
-            $progress = html_writer::empty_tag('img', array('id' => 'quickfindprogress'.$roleid, 'class' => 'quickfindprogress', 'src' => $this->page->theme->pix_url('i/loading_small', 'moodle'), 'alt' => get_string('loading', 'quickfindlist')));
+            $progress = html_writer::empty_tag('img', array('id' => 'quickfindprogress'.$roleid, 'class' => 'quickfindprogress', 'src' => $this->page->theme->pix_url('i/loading_small', 'moodle'), 'alt' => get_string('loading', 'block_quickfindlist')));
             $submit = html_writer::empty_tag('input', array('type' => 'submit', 'class' => 'submitbutton', 'name' => 'quickfindsubmit'.$roleid, 'value' => get_string('search')));
             $form = html_writer::tag('form', $search.$progress.$submit, array('id' => 'quickfindform'.$roleid, 'action' => $this->page->url.'#quickfindanchor'.$roleid, 'method' => 'post'));
 
