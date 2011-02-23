@@ -122,9 +122,10 @@ class block_quickfindlist extends block_base {
                 $COURSE->id
             );
             $this->page->requires->js_init_call('M.block_quickfindlist.init', $jsdata, false, $jsmodule);
+            $this->content->footer='';
+            $this->content->text = $anchor.$form.$list;
         }
-        $this->content->footer='';
-        $this->content->text = $anchor.$form.$list;
+        
         return $this->content;
 
     }
