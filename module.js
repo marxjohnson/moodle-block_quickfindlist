@@ -4,7 +4,7 @@ M.block_quickfindlist = {
         if (this.instances === undefined) {
             this.instances = new Array();
         }
-        
+
         var instance = {
             'roleid': roleid,
             'userfields': userfields,
@@ -33,7 +33,7 @@ M.block_quickfindlist = {
     },
 
     search: function(searchstring, roleid) {
-        
+
         var Y = this.Y;
         var instance = this.instances[roleid];
 
@@ -44,16 +44,18 @@ M.block_quickfindlist = {
         instance.progress.setStyle('visibility', 'visible');
         instance.xhr = Y.io(uri, {
             data: 'role='+roleid+'&name='+searchstring+'&courseformat='+instance.courseformat+'&courseid='+instance.courseid,
+            context: this,
             on: {
                 success: function(id, o) {
                     var response = Y.JSON.parse(o.responseText);
-                    var instance = M.block_quickfindlist.instances[response.roleid];                    
+                    var instance = this.instances[response.roleid];
                     var list = Y.Node.create('<ul />');
                     for (p in response.people) {
                         var userstring = instance.userfields.replace('[[firstname]]', response.people[p].firstname);
                         userstring = userstring.replace('[[lastname]]', response.people[p].lastname);
                         userstring = userstring.replace('[[username]]', response.people[p].username);
-                        list.appendChild(Y.Node.create('<li><a href="'+instance.url+'&id='+response.people[p].id+'">'+userstring+'</a></li>'));
+                        li = Y.Node.create('<li><a href="'+instance.url+'&id='+response.people[p].id+'">'+userstring+'</a></li>');
+                        list.appendChild(li);
                     }
                     instance.progress.setStyle('visibility', 'hidden');
                     Y.one('#quickfindlist'+roleid).replace(list);
@@ -61,7 +63,7 @@ M.block_quickfindlist = {
                 },
                 failure: function(id, o) {
                     if (o.statusText != 'abort') {
-                        var instance = M.block_quickfindlist.currentinstance;
+                        var instance = this.currentinstance;
                         instance.progress.setStyle('visibility', 'hidden');
                         if (o.statusText !== undefined) {
                             instance.listcontainer.set('innerHTML', o.statusText);
