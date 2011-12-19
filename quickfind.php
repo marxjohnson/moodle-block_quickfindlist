@@ -26,6 +26,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+define('AJAX_SCRIPT', true);
 require_once('../../config.php');
 
 $name = required_param('name', PARAM_TEXT);
@@ -33,9 +34,9 @@ $role = required_param('role', PARAM_INT);
 $courseformat = required_param('courseformat', PARAM_TEXT);
 $courseid = required_param('courseid', PARAM_TEXT);
 
-$context_system = get_context_instance(CONTEXT_SYSTEM);
+$context = get_context_instance(CONTEXT_COURSE, $courseid);
 
-if (has_capability('block/quickfindlist:use', $context_system)) {
+if (isloggedin() && has_capability('block/quickfindlist:use', $context) && confirm_sesskey()) {
 
     $output = new stdClass;
     $output->roleid = $role;

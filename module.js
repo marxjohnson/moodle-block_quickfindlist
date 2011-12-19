@@ -1,9 +1,13 @@
 M.block_quickfindlist = {
-    init: function(Y, roleid, userfields, url, courseformat, courseid) {
+
+    sesskey: null,
+
+    init: function(Y, roleid, userfields, url, courseformat, courseid, sesskey) {
         this.Y = Y;
         if (this.instances === undefined) {
             this.instances = new Array();
         }
+        this.sesskey = sesskey;
 
         var instance = {
             'roleid': roleid,
@@ -43,7 +47,11 @@ M.block_quickfindlist = {
         }
         instance.progress.setStyle('visibility', 'visible');
         instance.xhr = Y.io(uri, {
-            data: 'role='+roleid+'&name='+searchstring+'&courseformat='+instance.courseformat+'&courseid='+instance.courseid,
+            data: 'role='+roleid
+                +'&name='+searchstring
+                +'&courseformat='+instance.courseformat
+                +'&courseid='+instance.courseid
+                +'&sesskey='+this.sesskey,
             context: this,
             on: {
                 success: function(id, o) {

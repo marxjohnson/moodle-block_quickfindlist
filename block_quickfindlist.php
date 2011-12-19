@@ -191,7 +191,8 @@ class block_quickfindlist extends block_base {
                 $this->config->userfields,
                 $url->out(false),
                 $COURSE->format,
-                $COURSE->id
+                $COURSE->id,
+                sesskey()
             );
             $this->page->requires->js_init_call('M.block_quickfindlist.init',
                                                 $jsdata,
