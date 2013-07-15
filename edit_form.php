@@ -58,10 +58,10 @@ class block_quickfindlist_edit_form extends block_edit_form {
         $select = 'SELECT * ';
         $from = 'FROM {block} AS b
                     JOIN {block_instances} AS bi ON b.name = blockname ';
-        $where = 'WHERE name = "quickfindlist"
-                    AND pagetypepattern = "?"
+        $where = "WHERE name = 'quickfindlist'
+                    AND pagetypepattern = ?
                     AND parentcontextid = ?
-                    AND bi.id < ?';
+                    AND bi.id < ?";
         $params = array(
             $this->block->instance->pagetypepattern,
             $this->block->instance->parentcontextid,
