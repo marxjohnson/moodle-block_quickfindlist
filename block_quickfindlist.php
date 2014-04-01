@@ -58,6 +58,8 @@ class block_quickfindlist extends block_base {
             return $this->content;
         }
 
+	$this->content = new stdClass;
+
         if (empty($this->config->role)) {
             $select = 'SELECT * ';
             $from = 'FROM {block} AS b
@@ -81,6 +83,7 @@ class block_quickfindlist extends block_base {
                 }
             }
 
+            $this->config = new stdClass;
             $this->config->role = -1;
         }
 
