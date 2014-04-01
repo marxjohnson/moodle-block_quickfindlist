@@ -114,7 +114,7 @@ class block_quickfindlist_edit_form extends block_edit_form {
         // Fields for editing HTML block title and contents.
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
         $mform->addElement($select);
-        $strusefields = get_string('userfields', 'block_quickfindlist');
+        $struserfields = get_string('userfields', 'block_quickfindlist');
         $userfieldsdefault = get_string('userfieldsdefault', 'block_quickfindlist');
         $mform->addElement('text', 'config_userfields', $struserfields);
         $mform->setDefault('config_userfields', $userfieldsdefault);
