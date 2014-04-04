@@ -117,7 +117,9 @@ class block_quickfindlist_edit_form extends block_edit_form {
         $struserfields = get_string('userfields', 'block_quickfindlist');
         $userfieldsdefault = get_string('userfieldsdefault', 'block_quickfindlist');
         $mform->addElement('text', 'config_userfields', $struserfields);
+        $mform->setType('config_userfields', PARAM_TEXT);
         $mform->setDefault('config_userfields', $userfieldsdefault);
         $mform->addElement('text', 'config_url', get_string('url', 'block_quickfindlist'));
+        $mform->setType('config_url', PARAM_URL);
     }
 }
