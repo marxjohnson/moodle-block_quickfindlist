@@ -97,7 +97,7 @@ class block_quickfindlist extends block_base {
             $this->title = $strallusers.$strlist;
         }
 
-        $context_system = get_context_instance(CONTEXT_SYSTEM);
+        $context_system = context_system::instance();
 
         if (has_capability('block/quickfindlist:use', $context_system)) {
             if (empty($this->config->userfields)) {
