@@ -62,8 +62,8 @@ class block_quickfindlist extends block_base {
             $select = 'SELECT * ';
             $from = 'FROM {block} AS b
                         JOIN {block_instances} AS bi ON b.name = blockname ';
-            $where = 'WHERE name = "quickfindlist"
-                        AND pagetypepattern = "?"
+            $where = 'WHERE name = \'quickfindlist\'
+                        AND pagetypepattern = ?
                         AND parentcontextid = ?
                         AND bi.id < ?';
             $params = array(
@@ -80,7 +80,9 @@ class block_quickfindlist extends block_base {
                     }
                 }
             }
-
+            if (empty($this->config)) {
+                 $this->config = new stdClass();
+            }
             $this->config->role = -1;
         }
 
@@ -94,7 +96,7 @@ class block_quickfindlist extends block_base {
             $this->title = $strallusers.$strlist;
         }
 
-        $context_system = get_context_instance(CONTEXT_SYSTEM);
+        $context_system = context_system::instance();
 
         if (has_capability('block/quickfindlist:use', $context_system)) {
             if (empty($this->config->userfields)) {
@@ -198,6 +200,9 @@ class block_quickfindlist extends block_base {
                                                 $jsdata,
                                                 false,
                                                 $jsmodule);
+            if (empty($this->content)) {
+                 $this->content = new stdClass();
+            }
             $this->content->footer='';
             $this->content->text = $anchor.$form.$list;
         }

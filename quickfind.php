@@ -45,7 +45,7 @@ if (isloggedin() && has_capability('block/quickfindlist:use', $context) && confi
         $params = array("%$name%");
         $select = 'SELECT id, firstname, lastname, username ';
         $from = 'FROM {user} AS u ';
-        $where = "WHERE deleted = 0 AND CONCAT(firstname, ' ', lastname) LIKE ? ";
+        $where = "WHERE deleted = 0 AND " . $DB->sql_concat('firstname', 'lastname') . " LIKE ? ";
         if ($role != -1) {
             $params[] = $role;
             $subselect = 'SELECT COUNT(*) ';
