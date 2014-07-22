@@ -58,7 +58,7 @@ class block_quickfindlist extends block_base {
             return $this->content;
         }
 
-	$this->content = new stdClass;
+        $this->content = new stdClass;
 
         if (empty($this->config->role)) {
             $select = 'SELECT * ';
