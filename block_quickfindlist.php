@@ -200,6 +200,9 @@ class block_quickfindlist extends block_base {
                                                 $jsdata,
                                                 false,
                                                 $jsmodule);
+            if (empty($this->content)) {
+                 $this->content = new stdClass();
+            }
             $this->content->footer='';
             $this->content->text = $anchor.$form.$list;
         }
