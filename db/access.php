@@ -16,7 +16,7 @@
 
 
 /**
- * Defines the block/quickfindlist:use capability
+ * Defines the block_quickfindlist capabilities
  *
  * @package    block_quickfindlist
  * @copyright  2010 Onwards Taunton's College, UK
@@ -24,7 +24,22 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 $capabilities = array(
+
+    'block/quickfindlist:addinstance' => array(
+        'riskbitmask' => RISK_SPAM | RISK_XSS,
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_BLOCK,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+
+        'clonepermissionsfrom' => 'moodle/site:manageblocks'
+    ),
 
     'block/quickfindlist:use' => array(
 
