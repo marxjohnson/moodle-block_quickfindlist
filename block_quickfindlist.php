@@ -186,11 +186,6 @@ class block_quickfindlist extends block_base {
             }
             $list = html_writer::tag('ul', $listcontents, array('id' => 'quickfindlist'.$roleid));
 
-            $jsmodule = array(
-                'name'  =>  'block_quickfindlist',
-                'fullpath'  =>  '/blocks/quickfindlist/module.js',
-                'requires'  =>  array('base', 'node', 'json', 'io')
-            );
             $jsdata = array(
                 $this->config->role,
                 $this->config->userfields,
@@ -199,10 +194,7 @@ class block_quickfindlist extends block_base {
                 $COURSE->id,
                 sesskey()
             );
-            $this->page->requires->js_init_call('M.block_quickfindlist.init',
-                                                $jsdata,
-                                                false,
-                                                $jsmodule);
+            $this->page->requires->js_call_amd('block_quickfindlist/quickfindlist', 'init', $jsdata);
             if (empty($this->content)) {
                  $this->content = new stdClass();
             }

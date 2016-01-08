@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version = 2014072202;
+$plugin->version = 2015010600;
 $plugin->requires = 2010112400;
 $plugin->component = 'block_quickfindlist';
 $plugin->maturity = MATURITY_STABLE;
