@@ -91,7 +91,7 @@ class block_quickfindlist extends block_base {
 
         if ($role = $DB->get_record('role', array('id' => $this->config->role))) {
             $roleid = $role->id;
-            $this->title = $role->name.get_string('list', 'block_quickfindlist');
+            $this->title = role_get_name($role).get_string('list', 'block_quickfindlist');
         } else {
             $roleid = '-1';
             $strallusers = get_string('allusers', 'block_quickfindlist');

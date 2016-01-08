@@ -48,21 +48,20 @@ class block_quickfindlist_edit_form extends block_edit_form {
             $currentrole = null;
         }
 
-        $allusers = new stdClass;
-        $allusers->id = -1;
-        $allusers->name = get_string('allusers', 'block_quickfindlist');
-        $roles = array_merge(array($allusers), $DB->get_records('role'));
+        $roles = array('-1' => get_string('allusers', 'block_quickfindlist')) 
+                + get_assignable_roles($this->page->context, ROLENAME_ALIAS, false, get_admin());
 
         $rolesused = array();
 
         $select = 'SELECT * ';
         $from = 'FROM {block} AS b
                     JOIN {block_instances} AS bi ON b.name = blockname ';
-        $where = 'WHERE name = "quickfindlist"
-                    AND pagetypepattern = "?"
+        $where = 'WHERE name = ?
+                    AND pagetypepattern = ?
                     AND parentcontextid = ?
                     AND bi.id < ?';
         $params = array(
+            'quickfindlist',
             $this->block->instance->pagetypepattern,
             $this->block->instance->parentcontextid,
             $this->block->instance->id
@@ -76,20 +75,19 @@ class block_quickfindlist_edit_form extends block_edit_form {
         }
 
         $strrole = get_string('role', 'block_quickfindlist');
-        $select = HTML_QuickForm::createElement('select', 'config_role', $strrole);
+        $roleselect = $mform->createElement('select', 'config_role', $strrole);
 
-        foreach ($roles as $role) {
+        foreach ($roles as $id => $name) {
             $attributes = array();
-            if ($currentrole == $role->id) {
+            if ($currentrole == $id) {
                 $attributes['selected'] = 'selected';
-            } else if (in_array($role->id, $rolesused)) {
+            } else if (in_array($id, $rolesused)) {
                 $attributes['disabled'] = 'disabled';
             }
 
-            $value = $role->id;
-            $text = $role->name;
+            $text = $name;
 
-            $params = array($role->id);
+            $params = array($id);
             $subselect = 'SELECT COUNT(*) ';
             $subfrom = 'FROM {role_assignments} AS ra
                            JOIN {context} AS c ON c.id = contextid ';
@@ -108,12 +106,12 @@ class block_quickfindlist_edit_form extends block_edit_form {
             if ($usercount > 5000) {
                 echo $text .= get_string('lotsofusers', 'block_quickfindlist', $usercount);
             }
-            $select->addOption($text, $value, $attributes);
+            $roleselect->addOption($text, $id, $attributes);
         }
 
         // Fields for editing HTML block title and contents.
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
-        $mform->addElement($select);
+        $mform->addElement($roleselect);
         $struserfields = get_string('userfields', 'block_quickfindlist');
         $userfieldsdefault = get_string('userfieldsdefault', 'block_quickfindlist');
         $mform->addElement('text', 'config_userfields', $struserfields);
