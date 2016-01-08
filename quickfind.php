@@ -45,10 +45,12 @@ if (isloggedin() && has_capability('block/quickfindlist:use', $context) && confi
         $params = array("%$name%");
         $select = 'SELECT id, firstname, lastname, username ';
         $from = 'FROM {user} AS u ';
+        $where = 'WHERE deleted = 0 AND ';
         if (is_numeric($name)) {
-            $where = "WHERE deleted = 0 AND idnumber LIKE ? ";
+            $where .= $DB->sql_like('idnumber', '?') . ' ';
         } else {
-            $where = "WHERE deleted = 0 AND " . $DB->sql_concat('firstname', 'lastname') . " LIKE ? ";
+            $fullname = $DB->sql_concat_join("' '", array('firstname', 'lastname'));
+            $where .= $DB->sql_like($fullname, '?') . ' ';
         }
         if ($role != -1) {
             $params[] = $role;
