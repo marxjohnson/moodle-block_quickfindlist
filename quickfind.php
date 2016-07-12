@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,7 +26,6 @@
  * @author      Mark Johnson <mark.johnson@tauntons.ac.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 define('AJAX_SCRIPT', true);
 require_once('../../config.php');
 
@@ -42,16 +42,43 @@ if (isloggedin() && has_capability('block/quickfindlist:use', $context) && confi
     $output->roleid = $role;
     if (!empty($name)) {
 
-        $params = array("%$name%");
+        // max 2 words
+        $sStrings = explode(" ", trim($name), 2);
+
+        if (!$sStrings || empty($sStrings)) {
+            echo json_encode($output);
+            exit();
+        }
+
+        $params = array();
+
         $select = 'SELECT id, firstname, lastname, username ';
         $from = 'FROM {user} AS u ';
         $where = 'WHERE deleted = 0 AND ';
-        if (is_numeric($name)) {
-            $where .= $DB->sql_like('idnumber', '?') . ' ';
+
+        if (count($sStrings) == 1) {
+            if (is_numeric($sStrings[0])) {
+                $params[] = $sStrings[0];
+                $where .= $DB->sql_like('idnumber', '?') . ' ';
+            } else {
+                $fields = array('firstname', 'lastname', 'username');
+                $whereArr = array();
+
+                foreach ($fields as $field) {
+                    $whereArr[] = "{$field} LIKE ?";
+                    $params[] = "%{$sStrings[0]}%";
+                }
+
+                $where .= "(" . implode(" OR ", $whereArr) . ")";
+            }
         } else {
-            $fullname = $DB->sql_concat_join("' '", array('firstname', 'lastname'));
-            $where .= $DB->sql_like($fullname, '?') . ' ';
+            $params[] = "%{$sStrings[0]}%";
+            $params[] = "%{$sStrings[1]}%";
+            $params[] = "%{$sStrings[0]}%";
+            $params[] = "%{$sStrings[1]}%";
+            $where .= "(firstname LIKE ? AND lastname LIKE ?) OR (lastname LIKE ? AND firstname LIKE ?)";
         }
+
         if ($role != -1) {
             $params[] = $role;
             $subselect = 'SELECT COUNT(*) ';
@@ -63,16 +90,16 @@ if (isloggedin() && has_capability('block/quickfindlist:use', $context) && confi
                 $params[] = $courseid;
                 $subwhere .= ' AND contextlevel=50 AND instanceid = ?';
             }
-            $where .= 'AND ('.$subselect.$subfrom.$subwhere.') > 0 ';
+            $where .= 'AND (' . $subselect . $subfrom . $subwhere . ') > 0 ';
         }
+
         $order = 'ORDER BY lastname';
 
-        if ($people = $DB->get_records_sql($select.$from.$where.$order, $params)) {
+        if ($people = $DB->get_records_sql($select . $from . $where . $order, $params)) {
             $output->people = $people;
         }
     }
     echo json_encode($output);
-
 } else {
     header('HTTP/1.1 401 Not Authorised');
 }
