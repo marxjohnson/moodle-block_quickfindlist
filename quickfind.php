@@ -65,7 +65,7 @@ if (isloggedin() && has_capability('block/quickfindlist:use', $context) && confi
                 $whereArr = array();
 
                 foreach ($fields as $field) {
-                    $whereArr[] = "{$field} LIKE ?";
+                    $whereArr[] = $DB->sql_like($field, "?", false, false);
                     $params[] = "%{$sStrings[0]}%";
                 }
 
@@ -76,7 +76,7 @@ if (isloggedin() && has_capability('block/quickfindlist:use', $context) && confi
             $params[] = "%{$sStrings[1]}%";
             $params[] = "%{$sStrings[0]}%";
             $params[] = "%{$sStrings[1]}%";
-            $where .= "(firstname LIKE ? AND lastname LIKE ?) OR (lastname LIKE ? AND firstname LIKE ?)";
+            $where .= "(" . $DB->sql_like("firstname", "?", false, false) . " AND " . $DB->sql_like("lastname", "?", false, false) . ") OR (" . $DB->sql_like("lastname", "?", false, false) . " AND " . $DB->sql_like("firstname", "?", false, false) . ")";
         }
 
         if ($role != -1) {
