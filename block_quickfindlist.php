@@ -123,7 +123,7 @@ class block_quickfindlist extends block_base {
             $progressparams = array(
                 'id' => 'quickfindprogress'.$roleid,
                 'class' => 'quickfindprogress',
-                'src' => $this->page->theme->pix_url('i/loading_small', 'moodle'),
+                'src' => $this->page->theme->image_url('i/loading_small', 'moodle'),
                 'alt' => get_string('loading', 'block_quickfindlist')
             );
             $progress = html_writer::empty_tag('img', $progressparams);
