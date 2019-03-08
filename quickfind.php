@@ -34,7 +34,7 @@ $role = required_param('role', PARAM_INT);
 $courseformat = required_param('courseformat', PARAM_TEXT);
 $courseid = required_param('courseid', PARAM_TEXT);
 
-$context = get_context_instance(CONTEXT_COURSE, $courseid);
+$context = context_course::instance($courseid);
 
 if (isloggedin() && has_capability('block/quickfindlist:use', $context) && confirm_sesskey()) {
 
