@@ -110,6 +110,7 @@ class block_quickfindlist extends block_base {
             } else {
                 $url = new moodle_url($this->config->url);
             }
+            $loginasurl = new moodle_url('/course/loginas.php', array('id' => $COURSE->id));
             $name = optional_param('quickfindlistsearch'.$roleid, '', PARAM_TEXT);
 
             $anchor = html_writer::tag('a', '', array('name' => 'quickfindanchor'.$roleid));
@@ -192,7 +193,8 @@ class block_quickfindlist extends block_base {
                 $url->out(false),
                 $COURSE->format,
                 $COURSE->id,
-                sesskey()
+                sesskey(),
+                $loginasurl->out(false)
             );
             $this->page->requires->js_call_amd('block_quickfindlist/quickfindlist', 'init', $jsdata);
             if (empty($this->content)) {
