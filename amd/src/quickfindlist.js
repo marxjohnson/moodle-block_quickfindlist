@@ -3,12 +3,14 @@ define(
     function($) {
         var priv = {
             sesskey: null,
-            instances: []
+            instances: [],
+            loginasurl: ''
         };
 
         var t = {
-            init: function(roleid, userfields, url, courseformat, courseid, sesskey) {
+            init: function(roleid, userfields, url, courseformat, courseid, sesskey, loginasurl) {
                 priv.sesskey = sesskey;
+                priv.loginasurl = loginasurl;
 
                 var instance = {
                     'roleid': roleid,
@@ -67,7 +69,14 @@ define(
                         var userstring = instance.userfields.replace('[[firstname]]', response.people[p].firstname);
                         userstring = userstring.replace('[[lastname]]', response.people[p].lastname);
                         userstring = userstring.replace('[[username]]', response.people[p].username);
-                        var li = $('<li><a href="'+instance.url+'&id='+response.people[p].id+'">'+userstring+'</a></li>');
+                        if (priv.loginasurl !== '') {
+                            var loginas = '<a href="' + priv.loginasurl + '&user=' + response.people[p].id + '&sesskey=' +
+                                priv.sesskey + '"><i class="fa fa-user"></i></a>';
+                        } else {
+                            loginas = '';
+                        }
+                        var li = $('<li><a href="' + instance.url + '&id=' + response.people[p].id + '">' + userstring +
+                            '</a> ' + loginas + '</li>');
                         list.append(li);
                     }
                     $('#quickfindlist'+roleid).replaceWith(list);
