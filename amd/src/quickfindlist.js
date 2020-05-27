@@ -69,8 +69,12 @@ define(
                         var userstring = instance.userfields.replace('[[firstname]]', response.people[p].firstname);
                         userstring = userstring.replace('[[lastname]]', response.people[p].lastname);
                         userstring = userstring.replace('[[username]]', response.people[p].username);
-                        var loginas = '<a href="' + priv.loginasurl + '&user=' + response.people[p].id + '&sesskey=' +
-                            priv.sesskey + '"><i class="fa fa-user"></i></a>';
+                        if (priv.loginasurl !== '') {
+                            var loginas = '<a href="' + priv.loginasurl + '&user=' + response.people[p].id + '&sesskey=' +
+                                priv.sesskey + '"><i class="fa fa-user"></i></a>';
+                        } else {
+                            loginas = '';
+                        }
                         var li = $('<li><a href="' + instance.url + '&id=' + response.people[p].id + '">' + userstring +
                             '</a> ' + loginas + '</li>');
                         list.append(li);
