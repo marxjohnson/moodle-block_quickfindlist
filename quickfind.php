@@ -54,7 +54,7 @@ if (isloggedin() && has_capability('block/quickfindlist:use', $context) && confi
 
         $select = 'SELECT id, firstname, lastname, username ';
         $from = 'FROM {user} AS u ';
-        $where = 'WHERE deleted = 0 AND ';
+        $where = 'WHERE deleted = 0 AND (';
 
         if (count($sStrings) == 1) {
             if (is_numeric($sStrings[0])) {
@@ -78,6 +78,7 @@ if (isloggedin() && has_capability('block/quickfindlist:use', $context) && confi
             $params[] = "%{$sStrings[1]}%";
             $where .= "(" . $DB->sql_like("firstname", "?", false, false) . " AND " . $DB->sql_like("lastname", "?", false, false) . ") OR (" . $DB->sql_like("lastname", "?", false, false) . " AND " . $DB->sql_like("firstname", "?", false, false) . ")";
         }
+        $where .= ')';
 
         if ($role != -1) {
             $params[] = $role;

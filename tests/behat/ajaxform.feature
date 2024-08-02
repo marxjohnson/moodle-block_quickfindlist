@@ -1,5 +1,5 @@
 @block @block_quickfindlist @block_quickfindlist_ajaxform @javascript
-Feature:
+Feature: Quickfind list AJAX form
     As an admin
     In order to navigate to user pages quickly
     I need to be able to search for users by name
@@ -19,17 +19,14 @@ Feature:
             | cchristoph | student  |
             | ddanson    | manager  |
             | eedmonson  | manager  |
-        And I log in as "admin"
+        When I log in as "admin"
         And I am on site homepage
-        And I follow "Turn editing on"
+        And I turn editing mode on
         And I add the "Quickfind List" block
-        And I log out
 
     @block_quickfindlist_default
     Scenario: Search with default settings
-        When I log in as "admin"
-        And I am on site homepage
-        Then I should see "All Users List" in the "block_quickfindlist" "block"
+        Given I should see "All Users List" in the "block_quickfindlist" "block"
 
         When I set the field "quickfindlistsearch-1" to "son"
         Then I should see "Arnold Arnoldson" in the "block_quickfindlist" "block"
@@ -58,13 +55,10 @@ Feature:
 
     @block_quickfindlist_role
     Scenario: Search a single role
-        Given I log in as "admin"
-        And I am on site homepage
-        And I follow "Turn editing on"
-        And I configure the "block_quickfindlist" block
+        Given I configure the "block_quickfindlist" block
         And I set the field "config_role" to "Student"
         And I press "Save changes"
-        When I follow "Turn editing off"
+        And I turn editing mode off
         Then I should see "Student List" in the "block_quickfindlist" "block"
 
         When I set the field "quickfindlistsearch5" to "son"
@@ -90,13 +84,10 @@ Feature:
 
     @block_quickfindlist_display
     Scenario: Change displayed name
-        Given I log in as "admin"
-        And I am on site homepage
-        And I follow "Turn editing on"
-        And I configure the "block_quickfindlist" block
+        Given I configure the "block_quickfindlist" block
         And I set the field "config_userfields" to "[[username]]: [[lastname]]"
         And I press "Save changes"
-        And I follow "Turn editing off"
+        And I turn editing mode off
 
         When I set the field "quickfindlistsearch-1" to "an Da"
         Then I should not see "Dan Danson" in the "block_quickfindlist" "block"
@@ -104,13 +95,10 @@ Feature:
 
     @block_quickfindlist_customlink
     Scenario: Custom link
-        Given I log in as "admin"
-        And I am on site homepage
-        And I follow "Turn editing on"
-        And I configure the "block_quickfindlist" block
+        Given I configure the "block_quickfindlist" block
         And I set the field "config_url" to "/mod/forum/user.php?"
         And I press "Save changes"
-        And I follow "Turn editing off"
+        And I turn editing mode off
 
         When I set the field "quickfindlistsearch-1" to "an Da"
         When I click on "Dan Danson" "link" in the "block_quickfindlist" "block"

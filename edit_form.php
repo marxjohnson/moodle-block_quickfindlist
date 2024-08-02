@@ -42,13 +42,13 @@ class block_quickfindlist_edit_form extends block_edit_form {
         global $DB;
         global $COURSE;
 
-        if (!empty($this->config->role)) {
-            $currentrole = $this->config->role;
+        if (!empty($this->block->config->role)) {
+            $currentrole = $this->block->config->role;
         } else {
             $currentrole = null;
         }
 
-        $roles = array('-1' => get_string('allusers', 'block_quickfindlist')) 
+        $roles = array('-1' => get_string('allusers', 'block_quickfindlist'))
                 + get_assignable_roles($this->page->context, ROLENAME_ALIAS, false, get_admin());
 
         $rolesused = array();

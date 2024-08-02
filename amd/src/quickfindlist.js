@@ -67,7 +67,8 @@ define(
                         var userstring = instance.userfields.replace('[[firstname]]', response.people[p].firstname);
                         userstring = userstring.replace('[[lastname]]', response.people[p].lastname);
                         userstring = userstring.replace('[[username]]', response.people[p].username);
-                        var li = $('<li><a href="'+instance.url+'&id='+response.people[p].id+'">'+userstring+'</a></li>');
+                        var param = instance.url.includes('?') ? '&id=' : '?id=';
+                        var li = $('<li><a href="'+instance.url+param+response.people[p].id+'">'+userstring+'</a></li>');
                         list.append(li);
                     }
                     $('#quickfindlist'+roleid).replaceWith(list);
