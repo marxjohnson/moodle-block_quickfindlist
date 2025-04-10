@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
  * Defines the form for editing block instances
  *
@@ -35,8 +34,6 @@ class block_quickfindlist_edit_form extends block_edit_form {
      * the url the results should link to.
      *
      * @param mixed $mform
-     * @access protected
-     * @return void
      */
     protected function specific_definition($mform) {
         global $DB;
@@ -48,24 +45,24 @@ class block_quickfindlist_edit_form extends block_edit_form {
             $currentrole = null;
         }
 
-        $roles = array('-1' => get_string('allusers', 'block_quickfindlist'))
+        $roles = ['-1' => get_string('allusers', 'block_quickfindlist')]
                 + get_assignable_roles($this->page->context, ROLENAME_ALIAS, false, get_admin());
 
-        $rolesused = array();
+        $rolesused = [];
 
         $select = 'SELECT * ';
-        $from = 'FROM {block} AS b
-                    JOIN {block_instances} AS bi ON b.name = blockname ';
+        $from = 'FROM {block} b
+                    JOIN {block_instances} bi ON b.name = blockname ';
         $where = 'WHERE name = ?
                     AND pagetypepattern = ?
                     AND parentcontextid = ?
                     AND bi.id < ?';
-        $params = array(
+        $params = [
             'quickfindlist',
             $this->block->instance->pagetypepattern,
             $this->block->instance->parentcontextid,
-            $this->block->instance->id
-        );
+            $this->block->instance->id,
+        ];
         if ($blocksonthispage = $DB->get_records_sql($select.$from.$where, $params)) {
             foreach ($blocksonthispage as $block) {
                 if ($block->config = unserialize(base64_decode($block->configdata))) {
@@ -78,7 +75,7 @@ class block_quickfindlist_edit_form extends block_edit_form {
         $roleselect = $mform->createElement('select', 'config_role', $strrole);
 
         foreach ($roles as $id => $name) {
-            $attributes = array();
+            $attributes = [];
             if ($currentrole == $id) {
                 $attributes['selected'] = 'selected';
             } else if (in_array($id, $rolesused)) {
@@ -87,10 +84,10 @@ class block_quickfindlist_edit_form extends block_edit_form {
 
             $text = $name;
 
-            $params = array($id);
+            $params = [$id];
             $subselect = 'SELECT COUNT(*) ';
-            $subfrom = 'FROM {role_assignments} AS ra
-                           JOIN {context} AS c ON c.id = contextid ';
+            $subfrom = 'FROM {role_assignments} ra
+                           JOIN {context} c ON c.id = contextid ';
             $subwhere = 'WHERE ra.userid = {user}.id
                            AND ra.roleid = ?';
 

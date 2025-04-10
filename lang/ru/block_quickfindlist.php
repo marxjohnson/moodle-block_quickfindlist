@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
  * Defines lang strings for Quick Find List block
  *
@@ -24,22 +23,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['allusers']         = 'Все пользователи'; // All Users
-$string['pluginname']         = 'Quickfind List'; // Quickfind List, proper name not to be translated (rus. Быстрый поиск)
-$string['blockname']         = 'Быстрый поиск'; // Quickfind List, proper name can be without translation
-$string['list']         =  ' Список'; // List
-$string['loading']  = 'Загрузка...'; // Loading...
-$string['lotsofusers']         = ' ПРЕДУПРЕЖДЕНИЕ: слишком много пользователей ({$a}) возможно замедление работы'; // WARNING: lots of users ({$a}) could get slow
-
-// You cannot have two blocks on the same page without a role configured; Edit this block and select a role.
+$string['allusers']         = 'Все пользователи';
+$string['blockname']         = 'Быстрый поиск';
+$string['list']         = ' Список';
+$string['loading']  = 'Загрузка...';
+$string['lotsofusers']         = ' ПРЕДУПРЕЖДЕНИЕ: слишком много пользователей ({$a}) возможно замедление работы';
 $string['multiplenorole']         = 'Нельзя использовать два одинаковых блока; Отредактируйте блоки и назначте им роли.';
-$string['nousers']         =  'ОШИБКА: Нет пользователей с такого типа (роли)'; // ERROR: No users have that role'
-$string['quickfindlist']         = 'Quickfind List'; // Quickfind
-$string['quickfindlist:use']         = 'Использовать Quickfind List'; // Use Quickfind List
-$string['role']         = 'Для перечисленных пользователей'; // Role for listed people to have
-
-// Page to link to (the person\'s id will be appended to the end).<br />Leave blank for default profile
+$string['nousers']         = 'ОШИБКА: Нет пользователей с такого типа (роли)';
+$string['pluginname']         = 'Quickfind List';
+$string['quickfindlist']         = 'Quickfind List';
+$string['quickfindlist:use']         = 'Использовать Quickfind List';
+$string['role']         = 'Для перечисленных пользователей';
 $string['url']         = 'Ссылка на страницу (id пользователя подставится в конце).<br />Оставьте пустым для профиля по умолчанию';
-// User data to display/search,<br />You can use the following placeholders:<ul><li>[[firstname]]</li><li>[[lastname]]</li><li>[[username]]</li></ul>
 $string['userfields']         = 'Шаблон информации, отобажаемой о пользователе,<br />Допустимы следующие конструкции:<ul><li>[[firstname]]</li><li>[[lastname]]</li><li>[[username]]</li></ul>';
 $string['userfieldsdefault']         = '[[firstname]] [[lastname]]';
