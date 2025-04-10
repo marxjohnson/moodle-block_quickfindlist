@@ -25,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2025041000;
-$plugin->requires = 2022110800; // Moodle 4.1.
+$plugin->version = 2025041001;
+$plugin->requires = 2025040800; // Moodle 5.0.
 $plugin->component = 'block_quickfindlist';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.1 (Build: 2025041000)';
-$plugin->supports = [401, 405];
+$plugin->release = '2.2 (Build: 2025041001)';
+$plugin->supports = [500];
