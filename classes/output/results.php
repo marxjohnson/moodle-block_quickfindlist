@@ -16,10 +16,11 @@
 
 namespace block_quickfindlist\output;
 
-use moodle_url;
+use core\output\renderable;
+use core\output\templatable;
+use core\url;
 use renderer_base;
-use renderable;
-use templatable;
+
 
 /**
  * Search form
@@ -35,14 +36,14 @@ class results implements renderable, templatable {
      * Constructor
      *
      * @param array $users
-     * @param moodle_url $baseurl
+     * @param url $baseurl
      * @param int $roleid
      */
     public function __construct(
         /** @var array {id, displayname} For each user to list */
         protected array $users,
-        /** @var moodle_url Base URL for user links. */
-        protected moodle_url $baseurl,
+        /** @var url Base URL for user links. */
+        protected url $baseurl,
         /** @var int Role ID for search. -1 For all roles. */
         protected int $roleid = -1,
     ) {
@@ -55,7 +56,7 @@ class results implements renderable, templatable {
             $users[] = [
                 'id' => $user->id,
                 'displayname' => $user->displayname,
-                'url' => (new moodle_url($this->baseurl, ['id' => $user->id]))->out(false),
+                'url' => (new url($this->baseurl, ['id' => $user->id]))->out(false),
             ];
         }
         return [

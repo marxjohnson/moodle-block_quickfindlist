@@ -104,9 +104,9 @@ class block_quickfindlist extends block_base {
                 $this->config->userfields = get_string('userfieldsdefault', 'block_quickfindlist');
             }
             if (empty($this->config->url)) {
-                $url = new moodle_url('/user/view.php', ['course' => $COURSE->id]);
+                $url = new \core\url('/user/view.php', ['course' => $COURSE->id]);
             } else {
-                $url = new moodle_url($this->config->url);
+                $url = new \core\url($this->config->url);
             }
             $name = optional_param('quickfindlistsearch'.$roleid, '', PARAM_TEXT);
 

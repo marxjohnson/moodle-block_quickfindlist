@@ -16,18 +16,14 @@
 
 namespace block_quickfindlist\external;
 
-defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->libdir . '/externallib.php');
-
 use block_quickfindlist\output\results;
 use block_quickfindlist\user_search;
-use external_api;
-use external_function_parameters;
-use external_single_structure;
-use external_multiple_structure;
-use external_value;
-use moodle_url;
+use core\url;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_multiple_structure;
+use core_external\external_single_structure;
+use core_external\external_value;
 
 /**
  * Search users with a particular role by name
@@ -67,9 +63,9 @@ class search_users extends external_api {
         $roleid = $block->config->role ?? -1;
         $courseid = $block->page->course->id ?? SITEID;
         $userfields = $block->config->userfields ?? get_string('userfieldsdefault', 'block_quickfindlist');
-        $baseurl = $block->config->url ?? new moodle_url('/user/view.php', ['course' => $courseid]);
+        $baseurl = $block->config->url ?? new url('/user/view.php', ['course' => $courseid]);
         $users = self::search_users($roleid, $courseid, $userfields, $search);
-        $results = new results($users, new moodle_url($baseurl), $roleid);
+        $results = new results($users, new url($baseurl), $roleid);
         return $results->export_for_template($block->page->get_renderer('core'));
     }
 

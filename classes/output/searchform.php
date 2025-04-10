@@ -16,10 +16,11 @@
 
 namespace block_quickfindlist\output;
 
-use moodle_url;
+use core\output\renderable;
+use core\output\templatable;
+use core\url;
 use renderer_base;
-use renderable;
-use templatable;
+
 
 /**
  * Search form
@@ -35,15 +36,15 @@ class searchform implements renderable, templatable {
      * Constructor
      *
      * @param int $blockinstanceid
-     * @param moodle_url $actionurl
+     * @param url $actionurl
      * @param string $rolename
      * @param int $roleid
      */
     public function __construct(
         /** @var int Block Instance ID for Javascript initialisation */
         protected int $blockinstanceid,
-        /** @var moodle_url Action URL for form submission */
-        protected moodle_url $actionurl,
+        /** @var url Action URL for form submission */
+        protected url $actionurl,
         /** @var string Role name for input label */
         protected string $rolename,
         /** @var int Role ID for search. -1 For all roles. */
