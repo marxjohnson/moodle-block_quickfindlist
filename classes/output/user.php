@@ -14,20 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace block_quickfindlist\output;
+
 /**
- * Defines block metadata
+ * User for results list
  *
- * @package    block_quickfindlist
- * @copyright  2010 Onwards Taunton's College, UK
- * @author      Mark Johnson <mark.johnson@tauntons.ac.uk>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_quickfindlist
+ * @copyright 2025 onwards Catalyst IT EU {@link https://catalyst-eu.net}
+ * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class user {
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version = 2025041000;
-$plugin->requires = 2022110800; // Moodle 4.1.
-$plugin->component = 'block_quickfindlist';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.1 (Build: 2025041000)';
-$plugin->supports = [401, 405];
+}

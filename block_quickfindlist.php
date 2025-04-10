@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
  * Defines the block_quickfindlist class
  *
@@ -24,24 +23,24 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use block_quickfindlist\user_search;
+
 /**
  *  Class definition for the Quick Find List block.
  */
 class block_quickfindlist extends block_base {
+    use user_search;
 
+    /**
+     * Set title.
+     */
     public function init() {
-        $this->content_type = BLOCK_TYPE_TEXT;
         $this->title = get_string('quickfindlist', 'block_quickfindlist');
     }
 
-
+    #[\Override]
     public function instance_allow_multiple() {
         return true;
-    }
-
-    public function preferred_width() {
-        // The preferred value is in pixels
-        return 180;
     }
 
     /**
@@ -53,7 +52,7 @@ class block_quickfindlist extends block_base {
      *  results from the submitted search.
      */
     public function get_content() {
-        global $CFG, $COURSE, $DB;
+        global $COURSE, $DB;
         if ($this->content !== null) {
             return $this->content;
         }
@@ -62,20 +61,20 @@ class block_quickfindlist extends block_base {
 
         if (empty($this->config->role)) {
             $select = 'SELECT * ';
-            $from = 'FROM {block} AS b
-                        JOIN {block_instances} AS bi ON b.name = blockname ';
+            $from = 'FROM {block} b
+                        JOIN {block_instances} bi ON b.name = blockname ';
             $where = 'WHERE name = \'quickfindlist\'
                         AND pagetypepattern = ?
                         AND parentcontextid = ?
                         AND bi.id < ?';
-            $params = array(
+            $params = [
                 $this->instance->pagetypepattern,
                 $this->instance->parentcontextid,
-                $this->instance->id
-            );
+                $this->instance->id,
+            ];
             if ($thispageqflblocks = $DB->get_records_sql($select.$from.$where, $params)) {
                 foreach ($thispageqflblocks as $thispageqflblock) {
-                    //don't give a warning for blocks without a role configured
+                    // Don't give a warning for blocks without a role configured.
                     if (@unserialize(base64_decode($thispageqflblock->configdata))->role < 1) {
                         $this->content->text = get_string('multiplenorole', 'block_quickfindlist');
                         return $this->content;
@@ -89,117 +88,52 @@ class block_quickfindlist extends block_base {
             $this->config->role = -1;
         }
 
-        if ($role = $DB->get_record('role', array('id' => $this->config->role))) {
+        if ($role = $DB->get_record('role', ['id' => $this->config->role])) {
             $roleid = $role->id;
-            $this->title = role_get_name($role).get_string('list', 'block_quickfindlist');
+            $rolename = role_get_name($role);
         } else {
             $roleid = '-1';
-            $strallusers = get_string('allusers', 'block_quickfindlist');
-            $strlist = get_string('list', 'block_quickfindlist');
-            $this->title = $strallusers.$strlist;
+            $rolename = get_string('allusers', 'block_quickfindlist');
         }
+        $this->title = $rolename.get_string('list', 'block_quickfindlist');
 
-        $context_system = context_system::instance();
+        $context = context_system::instance();
 
-        if (has_capability('block/quickfindlist:use', $context_system)) {
+        if (has_capability('block/quickfindlist:use', $context)) {
             if (empty($this->config->userfields)) {
                 $this->config->userfields = get_string('userfieldsdefault', 'block_quickfindlist');
             }
             if (empty($this->config->url)) {
-                $url = new moodle_url('/user/view.php', array('course' => $COURSE->id));
+                $url = new moodle_url('/user/view.php', ['course' => $COURSE->id]);
             } else {
                 $url = new moodle_url($this->config->url);
             }
             $name = optional_param('quickfindlistsearch'.$roleid, '', PARAM_TEXT);
 
-            $anchor = html_writer::tag('a', '', array('name' => 'quickfindanchor'.$roleid));
-            $searchparams = array(
-                'id' => 'quickfindlistsearch'.$roleid,
-                'name' => 'quickfindlistsearch'.$roleid,
-                'class' => 'quickfindlistsearch',
-                'autocomplete' => 'off'
+            $searchform = new \block_quickfindlist\output\searchform(
+                $this->instance->id,
+                new moodle_url($this->page->url, anchor: "quickfindanchor{$roleid}"),
+                $rolename,
+                $this->config->role,
             );
-            $search = html_writer::empty_tag('input', $searchparams);
-            $progressparams = array(
-                'id' => 'quickfindprogress'.$roleid,
-                'class' => 'quickfindprogress',
-                'src' => $this->page->theme->image_url('i/loading_small', 'moodle'),
-                'alt' => get_string('loading', 'block_quickfindlist')
-            );
-            $progress = html_writer::empty_tag('img', $progressparams);
-            $submitparams = array(
-                'type' => 'submit',
-                'class' => 'submitbutton',
-                'name' => 'quickfindsubmit'.$roleid,
-                'value' => get_string('search')
-            );
-            $submit = html_writer::empty_tag('input', $submitparams);
-            $formparams = array(
-                'id' => 'quickfindform'.$roleid,
-                'action' => $this->page->url.'#quickfindanchor'.$roleid,
-                'method' => 'post'
-            );
-            $form = html_writer::tag('form', $search.$progress.$submit, $formparams);
+            $renderer = $this->page->get_renderer('core');
+            $form = $renderer->render($searchform);
 
             $quickfindsubmit[$roleid] = optional_param('quickfindsubmit'.$roleid,
                                                        false,
                                                        PARAM_ALPHA);
-            $listcontents = '';
+            $users = [];
             if (!empty($quickfindsubmit[$roleid])) {
-                if (!empty($name)) {
-                    $params = array("%$name%");
-                    $select = 'SELECT id, firstname, lastname, username ';
-                    $from = 'FROM {user} AS u ';
-                    $where = "WHERE deleted = 0 AND CONCAT(firstname, ' ', lastname) LIKE ? ";
-                    if ($this->config->role != -1) {
-                        $params[] = $this->config->role;
-                        $subselect = 'SELECT COUNT(*) ';
-                        $subfrom = 'FROM {role_assignments} AS ra
-                                           JOIN {context} AS c ON c.id = contextid ';
-                        $subwhere = 'WHERE ra.userid = u.id
-                                           AND ra.roleid=?';
-                        if ($COURSE->format != 'site') {
-                            $params[] = $COURSE->id;
-                            $subwhere .= ' AND contextlevel=50 AND instanceid = ?';
-                        }
-                        $where .= 'AND ('.$subselect.$subfrom.$subwhere.') > 0 ';
-                    }
-                    $order = 'ORDER BY lastname';
-
-                    if ($people = $DB->get_records_sql($select.$from.$where.$order, $params)) {
-                        foreach ($people as $person) {
-                            $userstring = str_replace('[[firstname]]',
-                                                      $person->firstname,
-                                                      $this->config->userfields);
-                            $userstring = str_replace('[[lastname]]',
-                                                      $person->lastname,
-                                                      $userstring);
-                            $userstring = str_replace('[[username]]',
-                                                      $person->username,
-                                                      $userstring);
-                            $linkurl = new moodle_url($url, array('id' => $person->id));
-                            $link = html_writer::tag('a', $userstring, array('href' => $linkurl));
-                            $listcontents .= html_writer::tag('li', $link);
-                        }
-                    }
-                }
+                $users = $this->search_users($roleid, $COURSE->id, $this->config->userfields, $name);
             }
-            $list = html_writer::tag('ul', $listcontents, array('id' => 'quickfindlist'.$roleid));
+            $results = new \block_quickfindlist\output\results($users, $url, $roleid);
+            $list = $renderer->render($results);
 
-            $jsdata = array(
-                $this->config->role,
-                $this->config->userfields,
-                $url->out(false),
-                $COURSE->format,
-                $COURSE->id,
-                sesskey()
-            );
-            $this->page->requires->js_call_amd('block_quickfindlist/quickfindlist', 'init', $jsdata);
             if (empty($this->content)) {
                  $this->content = new stdClass();
             }
-            $this->content->footer='';
-            $this->content->text = $anchor.$form.$list;
+            $this->content->footer = '';
+            $this->content->text = $form.$list;
         }
 
         return $this->content;

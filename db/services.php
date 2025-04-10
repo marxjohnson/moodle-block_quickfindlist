@@ -15,19 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines block metadata
+ * External service definitions for the quickfindlist block.
  *
- * @package    block_quickfindlist
- * @copyright  2010 Onwards Taunton's College, UK
- * @author      Mark Johnson <mark.johnson@tauntons.ac.uk>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     block_quickfindlist
+ * @author      Mark Johnson <mark.johnson@catalyst-eu.net>
+ * @copyright   2025 Catalyst IT Europe Ltd.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2025041000;
-$plugin->requires = 2022110800; // Moodle 4.1.
-$plugin->component = 'block_quickfindlist';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.1 (Build: 2025041000)';
-$plugin->supports = [401, 405];
+$functions = [
+    'block_quickfindlist_search_users' => [
+        'classname'     => 'block_quickfindlist\external\search_users',
+        'methodname'    => 'execute',
+        'description'   => 'Search for users with a certain role.',
+        'type'          => 'read',
+        'ajax'          => true,
+        'capabilities'  => 'block/quickfindlist:use',
+    ],
+];
