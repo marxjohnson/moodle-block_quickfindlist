@@ -13,15 +13,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import {call as fetchMany} from 'core/ajax';
 import Pending from 'core/pending';
 import Templates from 'core/templates';
 import Notification from 'core/notification';
+import Fetch from 'core/fetch';
 
 /**
  * @var {Element} blockinstance
  */
 let blockinstance;
+
+let currentRequest;
 
 /**
  * Return list of users
@@ -29,14 +31,16 @@ let blockinstance;
  * @param {String} search
  * @return {Promise}
  */
-const fetchUsers = (blockinstanceid, search) => {
-    return fetchMany([{
-        methodname: 'block_quickfindlist_search_users',
-        args: {
-            blockinstanceid,
-            search,
-        },
-    }])[0];
+export const getUserPreferences = async(blockinstanceid, search) => {
+    const endpoint = [blockinstanceid, 'users'];
+    const request = Fetch.performGet('block_quickfindlist', endpoint.join('/'), {params: {search}});
+    currentRequest = request;
+    const response = await request;
+    if (request !== currentRequest) {
+        // Too late, there's a new request in town.
+        return null;
+    }
+    return response.json();
 };
 
 const search = async(roleid, search) => {
@@ -44,7 +48,10 @@ const search = async(roleid, search) => {
     const progress = blockinstance.querySelector('.quickfindprogress');
     try {
         progress.style.visibility = 'visible';
-        const results = await fetchUsers(blockinstance.dataset.instanceId, search);
+        const results = await getUserPreferences(blockinstance.dataset.instanceId, search);
+        if (!results) {
+            return pending.resolve();
+        }
         const {html, js} = await Templates.renderForPromise('block_quickfindlist/results', results);
         Templates.replaceNode(blockinstance.querySelector('.quickfindlistresults'), html, js);
         progress.style.visibility = 'hidden';
@@ -53,7 +60,7 @@ const search = async(roleid, search) => {
         Notification.exception(e);
         return pending.reject();
     }
-
+    currentRequest = null;
     return pending.resolve();
 };
 

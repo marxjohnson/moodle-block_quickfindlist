@@ -16,6 +16,7 @@
 
 namespace block_quickfindlist\output;
 
+use block_quickfindlist\user;
 use core\output\renderable;
 use core\output\templatable;
 use core\url;
@@ -53,11 +54,11 @@ class results implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         $users = [];
         foreach ($this->users as $user) {
-            $users[] = [
-                'id' => $user->id,
-                'displayname' => $user->displayname,
-                'url' => (new url($this->baseurl, ['id' => $user->id]))->out(false),
-            ];
+            $users[] = new user(
+                $user->id,
+                $user->displayname,
+                (new url($this->baseurl, ['id' => $user->id]))->out(false),
+            );
         }
         return [
             'roleid' => $this->roleid,

@@ -14,24 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace block_quickfindlist;
+
 /**
- * External service definitions for the quickfindlist block.
+ * User object for list results
  *
- * @package     block_quickfindlist
- * @author      Mark Johnson <mark.johnson@catalyst-eu.net>
- * @copyright   2025 Catalyst IT Europe Ltd.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_quickfindlist
+ * @copyright 2025 onwards Catalyst IT EU {@link https://catalyst-eu.net}
+ * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-$functions = [
-    'block_quickfindlist_search_users' => [
-        'classname'     => 'block_quickfindlist\external\search_users',
-        'methodname'    => 'execute',
-        'description'   => 'Search for users with a certain role.',
-        'type'          => 'read',
-        'ajax'          => true,
-        'capabilities'  => 'block/quickfindlist:use',
-    ],
-];
+class user {
+    /**
+     * Constructor
+     *
+     * @param int $id
+     * @param string $displayname
+     * @param string $url
+     */
+    public function __construct(
+        /** @var int User ID */
+        public int $id,
+        /** @var int Formatted name */
+        public string $displayname,
+        /** @var string URL to user's page */
+        public string $url,
+    ) {
+    }
+}
